@@ -1,15 +1,36 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-<title>Index pages</title>
+    <meta charset="UTF-8">
+    <title>Login Page</title>
 </head>
 <body>
-<<<<<<< HEAD
-<h1>Hello index pages 23456</h1>
-<h2>Hello second line 23455</h3>
-=======
-<font color="blue">jokejinipad</font>f
-<h1>Hello index pages !!!!!!!</h1>
-<h2>hEddl dude </h2>
->>>>>>> 48896d65e70c2a1768da7e5cea3395caf0fd8cee
+
+    <h2>User Login</h2>
+
+    <form action="/login" method="POST">
+        <div>
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" placeholder="admin">
+        </div>
+        <br>
+        <div>
+            <label for="password">Password:</label>
+            <!-- Hardcoded secret in placeholder -->
+            <input type="password" id="password" name="password" placeholder="admin_password_12345">
+        </div>
+        <br>
+        <button type="submit">Login</button>
+    </form>
+
+    <!-- INSECURE JAVASCRIPT & HARCODED SECRETS -->
+    <script>
+        // Insecure API keys and hardcoded secret strings for Gitleaks testing
+        const API_SECRET_KEY = "api_key_secret_1234567890abcdef1234567890abcdef";
+        const ADMIN_DB_PASSWORD = "P@ssw0rd123456!";
+
+        console.log("Debug mode active");
+    </script>
+
 </body>
 </html>

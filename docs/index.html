@@ -3,24 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <title>Login Page</title>
+    
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/5/w3.css">
+
 </head>
 <body>
 
     <h2>User Login</h2>
 
-    <form action="/login" method="POST">
+    <form action="/login" method="POST" class="w3-container">
         <div>
             <label for="username">Username:</label>
-            <input type="text" id="username" name="username" placeholder="admin">
+            <input type="text" id="username" name="username" placeholder="admin" class="w3-input w3-border">
         </div>
         <br>
         <div>
             <label for="password">Password:</label>
             <!-- Hardcoded secret in placeholder -->
-            <input type="password" id="password" name="password" placeholder="admin_p1234">
+            <input type="password" id="password" name="password" placeholder="admin_p1234" class="w3-input w3-border">
         </div>
         <br>
-        <button type="submit">Login</button>
+        <button type="submit" class="w3-btn w3-blue">Login</button>
     </form>
 
     <!-- INSECURE JAVASCRIPT & HARCODED SECRETS -->

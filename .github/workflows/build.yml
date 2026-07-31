@@ -1,4 +1,4 @@
-name: Build
+name: Build Code Quality with SonarQube Cloud
 on:
   push:
     branches:

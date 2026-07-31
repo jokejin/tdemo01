@@ -28,13 +28,11 @@
 
     <!-- INSECURE JAVASCRIPT & HARCODED SECRETS -->
     <script>
-        // Insecure API keys and hardcoded secret strings for Gitleaks testing
-        
-        // Paste this in your JavaScript file:
-       
-        const API_SECRET_KEY = "api_key_secret_1234567890abcdef1234567890abcdef";
-        const ADMIN_DB_PASSWORD = "P@ssw0rd123456!";
+        // 1. THIS WILL TRIGGER GITLEAKS (Matches the exact 40-character AWS Secret pattern)
+    const AWS_SECRET_ACCESS_KEY = "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY";
 
+    // 2. THIS WILL TRIGGER SONARQUBE (SonarQube flags generic entropy/passwords)
+    const ADMIN_DB_PASSWORD = "P@ssw0rd123456!";
 
         console.log("Debug mode active");
         

@@ -1,4 +1,4 @@
-name: Secret Scanning with Gitleaks
+name: Secret Scanning with Gitleaks v2
 
 on:
   #push:

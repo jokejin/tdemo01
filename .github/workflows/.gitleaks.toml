@@ -1,0 +1,50 @@
+title = "Custom Gitleaks Rules"
+
+# Extend default Gitleaks rules
+[extend]
+useDefault = true
+
+# ---------------------------------------------------
+# Hardcoded password
+# ---------------------------------------------------
+[[rules]]
+id = "hardcoded-password"
+description = "Hardcoded password detected"
+regex = '''(?i)(password|passwd|pwd)\s*[:=]\s*["'][^"'\n]{1,100}["']'''
+tags = ["password", "secret"]
+
+# ---------------------------------------------------
+# Hardcoded API key
+# ---------------------------------------------------
+[[rules]]
+id = "hardcoded-api-key"
+description = "Hardcoded API key detected"
+regex = '''(?i)(api[_-]?key|apikey|secret[_-]?key|access[_-]?key|client[_-]?secret)\s*[:=]\s*["'][^"'\n]{4,200}["']'''
+tags = ["apikey", "secret"]
+
+# ---------------------------------------------------
+# Generic token
+# ---------------------------------------------------
+[[rules]]
+id = "hardcoded-token"
+description = "Hardcoded token detected"
+regex = '''(?i)(token|auth[_-]?token|bearer)\s*[:=]\s*["'][^"'\n]{6,300}["']'''
+tags = ["token", "secret"]
+
+# ---------------------------------------------------
+# JWT token
+# ---------------------------------------------------
+[[rules]]
+id = "jwt-token"
+description = "JWT token detected"
+regex = '''eyJ[A-Za-z0-9_-]+\.[A-Za-z0-9._-]+\.[A-Za-z0-9._-]+'''
+tags = ["jwt", "token"]
+
+# ---------------------------------------------------
+# Database connection string
+# ---------------------------------------------------
+[[rules]]
+id = "db-connection-string"
+description = "Database connection string detected"
+regex = '''(?i)(mysql|postgres|mongodb|redis):\/\/[^ \n]+'''
+tags = ["database", "secret"]

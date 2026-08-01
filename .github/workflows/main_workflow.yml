@@ -5,7 +5,8 @@ on:
   pull_request:
     branches: [ "main" ]
 
-jobs:
+jobs: 
+
   # 1. Call the Gitleaks workflow
   run-gitleaks:
     uses: ./.github/workflows/gitleaks.yml

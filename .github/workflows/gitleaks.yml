@@ -1,13 +1,15 @@
 name: Secret Scanning with Gitleaks
 
 on:
-  push:
-    branches: ["main"]
-  pull_request:
-    branches: ["main"]
-
+  #push:
+  #  branches: ["main"]
+  #pull_request:
+  #  branches: ["main"]
+  workflow_call:
+  
 jobs:
   gitleaks:
+    name : Gitleaks
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code

@@ -1,10 +1,15 @@
 name: Build Code Quality with SonarQube Cloud
 on:
-  push:
-    branches:
-      - main
-  pull_request:
-    types: [opened, synchronize, reopened]
+  #push:
+  #  branches:
+  #    - main
+  #pull_request:
+  #  types: [opened, synchronize, reopened]
+  workflow_call:
+    secrets:
+      SONAR_TOKEN:
+        required: true
+  
 jobs:
   sonarqube:
     name: SonarQube

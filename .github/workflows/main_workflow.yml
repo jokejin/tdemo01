@@ -1,0 +1,50 @@
+name: Main CI/CD Workflow
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  # 1. Call the Gitleaks workflow
+  run-gitleaks:
+    uses: ./.github/workflows/gitleaks.yml
+
+  # 2. Call the SonarQube workflow
+  run-sonarqube:
+    uses: ./.github/workflows/sonarq.yml
+    secrets:
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+  # 3. Handle Slack Notifications for Success AND Failure
+  notify-slack:
+    needs: [run-gitleaks, run-sonarqube] 
+    
+    # 'always()' ensures this job runs even if Gitleaks or SonarQube fail
+    if: always() 
+    runs-on: ubuntu-latest
+    steps:
+      
+      # Step A: Runs ONLY if BOTH Gitleaks and SonarQube are successful
+      - name: Send Slack Notification (SUCCESS)
+        if: ${{ needs.run-gitleaks.result == 'success' && needs.run-sonarqube.result == 'success' }}
+        uses: slackapi/slack-github-action@v1.24.0
+        with:
+          payload: |
+            {
+              "text": "✅ *Pipeline Passed!* \nGreat job *${{ github.actor }}*, your pull request/merge passed all checks.\n• *Gitleaks Status:* Passed\n• *SonarQube Status:* Passed\n👉 <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View the run here>"
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+      # Step B: Runs if EITHER Gitleaks OR SonarQube failed (or was cancelled)
+      - name: Send Slack Notification (FAILURE)
+        if: ${{ needs.run-gitleaks.result != 'success' || needs.run-sonarqube.result != 'success' }}
+        uses: slackapi/slack-github-action@v1.24.0
+        with:
+          payload: |
+            {
+              "text": "🚨 *Pipeline Failed!* \nHey *${{ github.actor }}*, your recent pull request/merge has failing checks.\n• *Gitleaks Status:* ${{ needs.run-gitleaks.result }}\n• *SonarQube Status:* ${{ needs.run-sonarqube.result }}\n👉 <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|Click here to view the logs>"
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}

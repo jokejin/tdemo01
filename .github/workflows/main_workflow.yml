@@ -6,6 +6,7 @@ on:
     branches: [ "main" ]
 
 jobs:
+  name: mainworkflow
   # 1. Call the Gitleaks workflow
   run-gitleaks:
     uses: ./.github/workflows/gitleaks.yml

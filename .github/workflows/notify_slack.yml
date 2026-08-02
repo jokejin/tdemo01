@@ -1,0 +1,62 @@
+name: Slack Notification Workflow
+on:
+  workflow_call:
+    inputs:
+      gitleaks_result:
+        required: true
+        type: string
+        description: "The result of the Gitleaks job"
+      sonarqube_result:
+        required: true
+        type: string
+        description: "The result of the SonarQube job"
+    secrets:
+      SLACK_WEBHOOK_URL:
+        required: true
+        description: "The Slack Webhook URL for notifications"
+
+jobs:
+  notify-slack:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Map GitHub user to Slack ID
+        id: slack-map
+        run: |
+          case "${{ github.actor }}" in
+            "jokejin")
+              echo "mention=<@U0BJRCPDG7K>" >> $GITHUB_OUTPUT
+              ;;
+            "jokejinipad")
+              echo "mention=<@U0BJMH9FJ06>" >> $GITHUB_OUTPUT
+              ;;
+            "somjin-gdot")
+              echo "mention=<@U0BJ86CS64F>" >> $GITHUB_OUTPUT
+              ;;
+            *)
+              echo "mention=*${{ github.actor }}*" >> $GITHUB_OUTPUT
+              ;;
+          esac
+
+      # Step A: Runs ONLY if BOTH Gitleaks and SonarQube are successful
+      - name: Send Slack Notification (SUCCESS)
+        if: ${{ inputs.gitleaks_result == 'success' && inputs.sonarqube_result == 'success' }}
+        uses: slackapi/slack-github-action@v1.24.0
+        with:
+          payload: |
+            {
+              "text": "✅ *Pipeline Passed!* \nGreat job ${{ steps.slack-map.outputs.mention }}, your pull request/merge passed all checks.\n• *Gitleaks Status:* Passed\n• *SonarQube Status:* Passed\n👉 <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View the run here>"
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+      # Step B: Runs if EITHER Gitleaks OR SonarQube failed (or was cancelled)
+      - name: Send Slack Notification (FAILURE)
+        if: ${{ inputs.gitleaks_result != 'success' || inputs.sonarqube_result != 'success' }}
+        uses: slackapi/slack-github-action@v1.24.0
+        with:
+          payload: |
+            {
+              "text": "🚨 *Pipeline Failed!* \nHey ${{ steps.slack-map.outputs.mention }}, your recent pull request/merge has failing checks.\n• *Gitleaks Status:* ${{ inputs.gitleaks_result }}\n• *SonarQube Status:* ${{ inputs.sonarqube_result }}\n👉 <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|Click here to view the logs>"
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}

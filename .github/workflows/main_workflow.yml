@@ -18,7 +18,7 @@ jobs:
 
   # 3. Handle Slack Notifications for Success AND Failure
   notify-slack:
-    needs: [run-gitleaks, run-sonarqube] 
+    needs: [run-sonarqube, run-gitleaks] 
     
     # 'always()' ensures this job runs even if Gitleaks or SonarQube fail
     if: always() 

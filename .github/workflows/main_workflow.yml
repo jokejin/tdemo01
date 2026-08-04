@@ -16,15 +16,22 @@ jobs:
     secrets:
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
-  # 3. Handle Slack Notifications for Success AND Failure
+  # 3. Call the Trivy workflow
+  run-trivy:
+    uses: ./.github/workflows/trivy.yml
+
+  # 4. Handle Slack Notifications for Success AND Failure
   notify-slack:
-    needs: [run-sonarqube, run-gitleaks] 
+    needs: [run-sonarqube, run-gitleaks, run-trivy] 
     
-    # 'always()' ensures this job runs even if Gitleaks or SonarQube fail
+    # 'always()' ensures this job runs even if Gitleaks, SonarQube, or Trivy fail
     if: always() 
     uses: ./.github/workflows/notify_slack.yml
     with:
       gitleaks_result: ${{ needs.run-gitleaks.result }}
       sonarqube_result: ${{ needs.run-sonarqube.result }}
+      trivy_result: ${{ needs.run-trivy.result }}
     secrets:
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+      
+      

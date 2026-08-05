@@ -45,7 +45,7 @@ jobs:
         with:
           payload: |
             {
-              "text": "✅ *Pipeline Passed!* \nGreat job ${{ steps.slack-map.outputs.mention }}, your pull request/merge passed all checks.\n• *Gitleaks Status:* Passed\n• *SonarQube Status:* Passed\n \n• *SonarQube Status:* Passed\n👉 <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View the run here>"
+              "text": "✅ *Pipeline Passed!* \nGreat job ${{ steps.slack-map.outputs.mention }}, your pull request/merge passed all checks.\n• *Gitleaks Status:* Passed\n• *SonarQube Status:* Passed\n \n• *SBOM/SCA  Status:* Passed\n👉 <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View the run here>"
             }
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}

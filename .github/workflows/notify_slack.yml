@@ -45,7 +45,7 @@ jobs:
         with:
           payload: |
             {
-              "text": "✅ *Pipeline Passed!* \nGreat job ${{ steps.slack-map.outputs.mention }}, your pull request/merge passed all checks.\n• *Gitleaks Status:* Passed\n• *SonarQube Status:* Passed\n👉 <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View the run here>"
+              "text": "✅ *Pipeline Passed!* \nGreat job ${{ steps.slack-map.outputs.mention }}, your pull request/merge passed all checks.\n• *Gitleaks Status:* Passed\n• *SonarQube Status:* Passed\n \n• *SonarQube Status:* Passed\n👉 <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View the run here>"
             }
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
@@ -57,7 +57,7 @@ jobs:
         with:
           payload: |
             {
-              "text": "🚨 *Pipeline Failed!* \nHey ${{ steps.slack-map.outputs.mention }}, your recent pull request/merge has failing checks.\n• *Gitleaks Status:* ${{ inputs.gitleaks_result }}\n• *SonarQube Status:* ${{ inputs.sonarqube_result }}\n👉 <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|Click here to view the logs>"
+              "text": "🚨 *Pipeline Failed!* \nHey ${{ steps.slack-map.outputs.mention }}, your recent pull request/merge has failing checks.\n• *Gitleaks Status:* ${{ inputs.gitleaks_result }}\n• *SonarQube Status:* ${{ inputs.sonarqube_result }}\n• *SBOM/SCA:* ${{ inputs.sbom_sca_result }}👉 <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|Click here to view the logs>"
             }
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}

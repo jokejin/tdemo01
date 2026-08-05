@@ -1,0 +1,43 @@
+name: Trivy DevSecOps Scan
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  security-and-sbom:
+    name: Trivy SCA & SBOM
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Step 1: Scan for vulnerabilities and fail the build if critical issues exist
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'             # 'fs' scans the filesystem (your repository code/dependencies)
+          ignore-unfixed: true        # Ignores vulnerabilities that don't have a patch yet
+          format: 'table'             # Prints a readable table in the GitHub Actions console
+          exit-code: '1'              # Fails the pipeline if vulnerabilities are found
+          severity: 'CRITICAL,HIGH'   # Only alerts on the most severe vulnerabilities
+
+      # Step 2: Generate the SBOM (Runs even if Step 1 fails)
+      - name: Generate CycloneDX SBOM
+        uses: aquasecurity/trivy-action@master
+        if: success() || failure()    # Ensures the SBOM is generated even if the scan fails above
+        with:
+          scan-type: 'fs'
+          format: 'cyclonedx'         # The industry-standard format
+          output: 'sbom.json'         # Saves the output to a local file
+
+      # Step 3: Upload the SBOM so you can download it from the GitHub UI
+      - name: Upload SBOM Artifact
+        uses: actions/upload-artifact@v4
+        if: success() || failure()
+        with:
+          name: my-app-sbom
+          path: sbom.json
+          retention-days: 30          # Keeps the file available for 30 days

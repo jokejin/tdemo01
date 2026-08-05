@@ -5,26 +5,25 @@ on:
   pull_request:
     branches: [ "main" ]
 
-jobs: 
-  # 1. Call the Gitleaks workflow
+jobs:
   run-gitleaks:
     uses: ./.github/workflows/gitleaks.yml
 
-  # 2. Call the SonarQube workflow
   run-sonarqube:
     uses: ./.github/workflows/sonarq.yml
     secrets:
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
-  # 3. Handle Slack Notifications for Success AND Failure
+  run-sbom-sca:
+    uses: ./.github/workflows/sbom_sca.yml
+
   notify-slack:
-    needs: [run-sonarqube, run-gitleaks] 
-    
-    # 'always()' ensures this job runs even if Gitleaks or SonarQube fail
-    if: always() 
+    needs: [run-sonarqube, run-gitleaks, run-sbom-sca]
+    if: always()
     uses: ./.github/workflows/notify_slack.yml
     with:
       gitleaks_result: ${{ needs.run-gitleaks.result }}
       sonarqube_result: ${{ needs.run-sonarqube.result }}
+      sbom_sca_result: ${{ needs.run-sbom-sca.result }}
     secrets:
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}

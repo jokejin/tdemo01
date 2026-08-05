@@ -5,11 +5,12 @@ on:
       gitleaks_result:
         required: true
         type: string
-        description: "The result of the Gitleaks job"
       sonarqube_result:
         required: true
         type: string
-        description: "The result of the SonarQube job"
+      sbom_sca_result:
+        required: true
+        type: string
     secrets:
       SLACK_WEBHOOK_URL:
         required: true

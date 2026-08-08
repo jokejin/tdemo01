@@ -1,0 +1,37 @@
+name: SBOM and SCA
+
+on:
+  workflow_call:
+
+permissions:
+  contents: read
+
+jobs:
+  sbom-sca:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      # Generate SBOM
+      - name: Generate SBOM
+        uses: anchore/sbom-action@v0
+        with:
+          path: .
+          format: cyclonedx-json
+          output-file: sbom.json
+
+      # Scan the SBOM for vulnerabilities
+      - name: Scan SBOM with Grype
+        uses: anchore/scan-action@v6
+        with:
+          sbom: sbom.json
+          fail-build: false   # change to true if you want pipeline failure
+
+      # Upload SBOM artifact
+      - name: Upload SBOM
+        uses: actions/upload-artifact@v4
+        with:
+          name: sbom
+          path: sbom.json
